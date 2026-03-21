@@ -22,7 +22,7 @@ A private, security-first platform that analyzes repositories, detects vulnerabi
 
 Most AI code automation tools require trusting third-party infrastructure with your source code and credentials. ARGOS was built to solve that: a fully private platform where every scan, every credential, and every workflow stays under your control.
 
-The platform connects to real vulnerability databases (OSV.dev), real repository hosting (GitHub API), and runs actual static analysis on your code — not simulated demos.
+The platform connects to real vulnerability databases (OSV.dev), real repository hosting (GitHub API), and runs actual static analysis on your code, not simulated demos.
 
 ---
 
