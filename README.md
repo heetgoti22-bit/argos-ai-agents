@@ -8,12 +8,11 @@ A private, security-first platform that analyzes repositories, detects vulnerabi
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react)](https://react.dev)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)](https://postgresql.org)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![Deployed](https://img.shields.io/badge/Live-Deployed-success?style=flat-square)](https://argos-ai-agents.netlify.app)
 
-[Live Demo](https://argos-ai-agents.netlify.app
-) · [API Docs](https://argos-api-55ia.onrender.com/docs) · [Report Issue](../../issues)
+[Live Demo](https://argos-ai-agents.netlify.app) · [API Docs](https://argos-api-55ia.onrender.com/docs) · [Report Issue](../../issues)
 
 </div>
 
@@ -27,11 +26,24 @@ The platform connects to real vulnerability databases (OSV.dev), real repository
 
 ---
 
+## Live Deployment
+
+| Service | URL | Status |
+|---------|-----|--------|
+| Frontend | [argos-ai-agents.netlify.app](https://argos-ai-agents.netlify.app) | Netlify |
+| Backend API | [argos-api-55ia.onrender.com](https://argos-api-55ia.onrender.com) | Render |
+| API Docs | [argos-api-55ia.onrender.com/docs](https://argos-api-55ia.onrender.com/docs) | Swagger UI |
+| Health Check | [argos-api-55ia.onrender.com/health](https://argos-api-55ia.onrender.com/health) | JSON |
+
+> Note: Render free tier spins down after inactivity. First request after idle may take 30-50 seconds.
+
+---
+
 ## What It Does
 
 ARGOS provides six specialized AI agents that each handle a distinct part of the code analysis and security pipeline:
 
-**Repo Scanner** parses source files using AST (Abstract Syntax Tree) analysis, extracting functions, classes, import statements, and calculating cyclomatic complexity per file. It supports Python, JavaScript, TypeScript, and Go.
+**Repo Scanner** parses source files using AST (Abstract Syntax Tree) analysis, extracting functions, classes, import statements, and calculating cyclomatic complexity per file. Supports Python, JavaScript, TypeScript, and Go.
 
 **Bug Detector** runs static analysis with six implemented rules covering security risks (eval() usage, hardcoded secrets), code quality (bare except clauses, unresolved TODOs, leftover console.log statements), and style enforcement (line length limits).
 
@@ -49,13 +61,13 @@ ARGOS provides six specialized AI agents that each handle a distinct part of the
 
 ```
                     ┌─────────────────┐
-                    │   React Frontend │
-                    │   (Port 3000)    │
+                    │  React Frontend  │
+                    │    (Netlify)     │
                     └────────┬────────┘
                              │ HTTP
                     ┌────────▼────────┐
-                    │  FastAPI Gateway │
-                    │   (Port 8000)    │
+                    │  FastAPI Backend  │
+                    │    (Render)      │
                     │                  │
                     │  /api/v1/repos   │
                     │  /api/v1/agents  │
@@ -63,18 +75,17 @@ ARGOS provides six specialized AI agents that each handle a distinct part of the
                     │  /api/v1/security│
                     └──┬─────┬─────┬──┘
                        │     │     │
-              ┌────────▼┐ ┌──▼──┐ ┌▼────────┐
-              │PostgreSQL│ │Redis│ │  Agent   │
-              │   (DB)   │ │(Queue│ │ Workers  │
-              │          │ │ TBD) │ │(Sandbox) │
-              └──────────┘ └─────┘ └────┬─────┘
-                                        │
-                          ┌─────────────┼──────────────┐
-                          │             │              │
-                    ┌─────▼─────┐ ┌────▼─────┐ ┌─────▼─────┐
-                    │ GitHub API│ │ OSV.dev  │ │Claude API │
-                    │(Repo Fetch│ │(CVE Data)│ │(Synthesis)│
-                    └───────────┘ └──────────┘ └───────────┘
+              ┌────────▼┐ ┌──▼───┐ ┌▼────────┐
+              │  SQLite  │ │Redis │ │  Agent   │
+              │   (DB)   │ │(TBD) │ │ Workers  │
+              └──────────┘ └──────┘ └────┬─────┘
+                                         │
+                           ┌─────────────┼──────────────┐
+                           │             │              │
+                     ┌─────▼─────┐ ┌────▼─────┐ ┌─────▼─────┐
+                     │ GitHub API│ │ OSV.dev  │ │Claude API │
+                     │(Repo Fetch│ │(CVE Data)│ │(Synthesis)│
+                     └───────────┘ └──────────┘ └───────────┘
 ```
 
 ---
@@ -83,14 +94,14 @@ ARGOS provides six specialized AI agents that each handle a distinct part of the
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| Backend | Python 3.12, FastAPI | REST API, async request handling |
-| Frontend | React 18, Vanilla CSS | Dashboard, agent controls, visualizations |
-| Database | PostgreSQL 16 (prod), SQLite (dev) | Repos, runs, pipelines, credentials, logs |
-| ORM | SQLAlchemy 2.0, Alembic | Schema management, migrations |
+| Backend | Python 3.12, FastAPI 0.115 | REST API, async request handling |
+| Frontend | React 18 | Dashboard, agent controls, visualizations |
+| Database | SQLite (dev/deployed), PostgreSQL (production) | Repos, runs, pipelines, credentials, logs |
+| ORM | SQLAlchemy 2.0 | Schema management |
 | Security | cryptography (Fernet) | AES-256 credential encryption |
 | CVE Data | OSV.dev API | Real-time vulnerability lookup |
 | Code Hosting | GitHub REST API | Repository ingestion |
-| Containers | Docker, Docker Compose | Deployment, sandboxed execution |
+| Deployment | Render (backend), Netlify (frontend) | Cloud hosting |
 | LLM (optional) | Claude API | Answer synthesis, PR drafting |
 
 ---
@@ -103,19 +114,19 @@ ARGOS provides six specialized AI agents that each handle a distinct part of the
 - Node.js 18+
 - Git
 
-### Quick Start (Local Development)
+### Local Development
 
 ```bash
 # Clone
-git clone https://github.com/YOUR_USERNAME/argos-ai-agents.git
+git clone https://github.com/heetgoti22-bit/argos-ai-agents.git
 cd argos-ai-agents
 
 # Backend
 cd backend
 python3 -m venv venv
-source venv/bin/activate        # macOS/Linux
+source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env            # Edit with your API keys (optional)
+cp .env.example .env
 uvicorn app.main:app --reload
 
 # Frontend (new terminal)
@@ -124,9 +135,11 @@ npm install
 npm start
 ```
 
-**Frontend:** http://localhost:3000
-**API Docs:** http://localhost:8000/docs
-**Health Check:** http://localhost:8000/health
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| API Docs | http://localhost:8000/docs |
+| Health Check | http://localhost:8000/health |
 
 ### Docker Deployment
 
@@ -134,7 +147,7 @@ npm start
 docker-compose up --build
 ```
 
-This starts the full stack: FastAPI backend, React frontend, PostgreSQL database, and Redis.
+Starts: FastAPI (8000), React (3000), PostgreSQL (5432), Redis (6379).
 
 ---
 
@@ -144,10 +157,10 @@ This starts the full stack: FastAPI backend, React frontend, PostgreSQL database
 argos-ai-agents/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI application entry point
+│   │   ├── main.py              # FastAPI entry point
 │   │   ├── config.py            # Environment configuration
 │   │   ├── database.py          # SQLAlchemy engine and session
-│   │   ├── models.py            # Database models (Repo, Run, Pipeline, Credential, Log)
+│   │   ├── models.py            # DB models (Repo, Run, Pipeline, Credential, Log)
 │   │   ├── schemas.py           # Pydantic request/response schemas
 │   │   ├── agents/
 │   │   │   ├── scanner.py       # AST parsing and code analysis
@@ -162,7 +175,7 @@ argos-ai-agents/
 │   │   │   ├── rag.py           # Codebase Q&A endpoint
 │   │   │   └── security.py      # Vault and credential management
 │   │   ├── services/
-│   │   │   ├── github_service.py   # GitHub API integration
+│   │   │   ├── github_service.py   # GitHub API client
 │   │   │   ├── osv_service.py      # OSV.dev vulnerability lookup
 │   │   │   ├── claude_service.py   # LLM answer synthesis
 │   │   │   └── vault_service.py    # AES-256-Fernet encryption
@@ -171,19 +184,20 @@ argos-ai-agents/
 │   │       └── embeddings.py    # Vector math utilities
 │   ├── requirements.txt
 │   ├── Dockerfile
+│   ├── .python-version
 │   └── .env.example
 ├── frontend/
 │   ├── public/
 │   │   └── index.html
 │   ├── src/
-│   │   ├── App.jsx              # Main application (all 8 tabs)
+│   │   ├── App.jsx              # Main application (8 tabs)
 │   │   ├── index.js             # React entry point
 │   │   └── hooks/
 │   │       └── useApi.js        # Backend API client
 │   ├── package.json
 │   └── Dockerfile
 ├── docker-compose.yml
-├── render.yaml                  # Render deployment blueprint
+├── render.yaml
 ├── README.md
 └── LICENSE
 ```
@@ -192,7 +206,7 @@ argos-ai-agents/
 
 ## API Reference
 
-All endpoints are documented in the interactive Swagger UI at `/docs`.
+Interactive documentation available at [argos-api-55ia.onrender.com/docs](https://argos-api-55ia.onrender.com/docs).
 
 | Method | Endpoint | Description |
 |--------|---------|-------------|
@@ -233,44 +247,42 @@ This is a developer preview. The table below is an honest account of what is ful
 |-----------|--------|---------|
 | Repo Scanner (AST parsing) | Implemented | Parses Python, JS/TS, Go. Extracts functions, classes, complexity. |
 | Bug Detector (static analysis) | Implemented | 6 rules: SEC001 (eval), SEC002 (secrets), PY003 (bare except), QA001 (TODO), QA002 (console.log), STYLE001 (line length). |
-| Dependency Analyzer | Implemented | Parses requirements.txt and package.json. Queries OSV.dev API for real CVE data per package/version. |
-| CVE Remediator | Implemented | Generates unified diff patches and complete PR descriptions from OSV.dev vulnerability data. |
-| GitHub Repo Fetching | Implemented | Fetches file trees and contents via GitHub REST API. Public repos, up to 40 files per repo. |
-| Credential Vault | Implemented | AES-256-Fernet encryption with encrypt/decrypt/rotate operations. Audit logging for all vault access. |
-| Pipeline Orchestrator | Implemented | Dynamic multi-agent pipelines. Create custom sequences, execute in order, track per-stage results. |
-| Embedding Indexer | Prototype | Hash-based 32-dimensional embeddings with cosine similarity search. Production target: sentence-transformers. |
-| RAG Answer Synthesis | Prototype | Retrieval from vector index with Claude API synthesis and local fallback. |
-| Docker Sandbox | Code Complete | Implementation exists in security/sandbox.py. Not live-executed in browser demo. |
-| Database Persistence | Implemented | PostgreSQL in production (Render), SQLite in local development. Full schema with SQLAlchemy ORM. |
-| Task Queue | Planned | Architecture designed for Celery + Redis. Agent execution currently synchronous. |
+| Dependency Analyzer | Implemented | Parses requirements.txt and package.json. Queries OSV.dev API for real CVE data. |
+| CVE Remediator | Implemented | Generates unified diff patches and PR descriptions from OSV.dev data. PR payload drafting only — does not POST to GitHub. |
+| GitHub Repo Fetching | Implemented | Fetches file trees and contents via GitHub REST API. Public repos, up to 40 files. |
+| Credential Vault | Implemented | AES-256-Fernet encryption with encrypt/decrypt/rotate and audit logging. |
+| Pipeline Orchestrator | Implemented | Dynamic multi-agent pipelines with custom sequences and scheduling. |
+| Embedding Indexer | Prototype | Hash-based 32-dim embeddings with cosine similarity. Production: sentence-transformers. |
+| RAG Answer Synthesis | Prototype | Vector search with Claude API synthesis and local fallback. |
+| Docker Sandbox | Code Complete | Implementation in security/sandbox.py. Not live in deployed version. |
+| Database Persistence | Implemented | SQLite in deployed version, PostgreSQL via Docker Compose. |
+| Task Queue | Planned | Architecture designed for Celery + Redis. |
 
 ---
 
 ## Security Model
 
-ARGOS follows a security-first design. These are the implemented security mechanisms:
+**Credential Encryption:** All secrets encrypted at rest using AES-256-Fernet symmetric encryption. Master key stored separately. Every operation recorded in audit log.
 
-**Credential Encryption:** All secrets are encrypted at rest using AES-256-Fernet symmetric encryption. The master key is stored separately from encrypted values. Every encrypt, decrypt, and rotate operation is recorded in an audit log.
+**Sandboxed Execution:** Agent code designed to run inside Docker containers with `network_disabled=True`, memory limits, CPU quotas, and `read_only=True` filesystem.
 
-**Sandboxed Execution:** The `SandboxExecutor` class (security/sandbox.py) runs agent code inside Docker containers with `network_disabled=True`, memory limits, CPU quotas, and `read_only=True` filesystem. Containers are destroyed after each task.
+**Secret Scanning:** Bug Detector includes rules SEC001 and SEC002 that detect `eval()` usage and hardcoded passwords/tokens/API keys.
 
-**Secret Scanning:** The Bug Detector agent includes rules SEC001 and SEC002 that detect `eval()` usage and hardcoded passwords/tokens/API keys in source code using pattern matching.
-
-**Least Privilege:** In the production architecture, each agent receives a scoped, short-lived token for the specific task it needs to perform. Tokens are revoked after task completion.
-
-**Audit Logging:** Every agent execution, credential access, and key rotation is logged with timestamps in the database for compliance and debugging.
+**Audit Logging:** Every agent execution, credential access, and key rotation is logged with timestamps.
 
 ---
 
-## External API Integration
+## External APIs
 
-ARGOS integrates with three external APIs. All are optional and have fallback behavior when unavailable.
+ARGOS integrates with three external APIs. All are optional with fallback behavior.
 
-**OSV.dev API** — Used by the Dependency Analyzer and CVE Remediator for real-time vulnerability lookups. No authentication required. Each dependency is queried individually by name, version, and ecosystem. Rate limits are generous for typical usage.
+**OSV.dev API** — Real-time vulnerability lookups. No authentication required. Used by Dependency Analyzer and CVE Remediator.
 
-**GitHub REST API** — Used to fetch repository file trees and contents. Works with public repositories without authentication (60 requests/hour). Adding a GitHub token in the `.env` file increases this to 5,000 requests/hour.
+**GitHub REST API** — Repository file fetching. Works without auth (60 req/hr). Token increases to 5,000 req/hr.
 
-**Claude API (optional)** — Used for RAG answer synthesis and PR description generation. When the API key is not configured, the system falls back to local template-based responses. In the prototype, API calls are made from the frontend for demonstration purposes. In production, all external API calls would be routed through the backend gateway with rate limiting and cost controls.
+**Claude API (optional)** — Answer synthesis for RAG Q&A. Falls back to local template responses when unavailable.
+
+> In the deployed prototype, some API calls are made from the frontend for demonstration. Production deployment would route all external calls through the backend with rate limiting and cost controls.
 
 ---
 
@@ -279,84 +291,93 @@ ARGOS integrates with three external APIs. All are optional and have fallback be
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `DATABASE_URL` | No | `sqlite:///./argos.db` | Database connection string |
-| `REDIS_URL` | No | `redis://localhost:6379` | Redis connection (for future task queue) |
-| `CLAUDE_API_KEY` | No | Empty | Anthropic API key for answer synthesis |
-| `GITHUB_TOKEN` | No | Empty | GitHub personal access token |
-| `VAULT_MASTER_KEY` | No | Auto-generated | Fernet key for credential encryption |
 | `CORS_ORIGINS` | No | `http://localhost:3000` | Allowed frontend origins |
+| `CLAUDE_API_KEY` | No | Empty | Anthropic API key for synthesis |
+| `GITHUB_TOKEN` | No | Empty | GitHub personal access token |
+| `VAULT_MASTER_KEY` | No | Auto-generated | Fernet encryption key |
 
 ---
 
 ## Deployment
 
-### Render (Recommended)
+### Current Deployment
 
-The repository includes a `render.yaml` blueprint for one-click deployment:
+- **Frontend:** Netlify (free tier) — [argos-ai-agents.netlify.app](https://argos-ai-agents.netlify.app)
+- **Backend:** Render (free tier) — [argos-api-55ia.onrender.com](https://argos-api-55ia.onrender.com)
 
-1. Push to GitHub
-2. Go to [render.com](https://render.com) → New → Blueprint
-3. Connect the repository
-4. Render provisions PostgreSQL, the API service, and the static frontend automatically
+### Deploy Your Own
 
-### Docker Compose
+**Backend (Render):**
+1. Fork this repo
+2. Create a new Web Service on [render.com](https://render.com)
+3. Root Directory: `backend`
+4. Build Command: `pip install -r requirements.txt`
+5. Start Command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+
+**Frontend (Netlify):**
+1. Create a new site on [netlify.com](https://netlify.com)
+2. Base directory: `frontend`
+3. Build command: `npm install && REACT_APP_API_URL=https://your-api.onrender.com npm run build`
+4. Publish directory: `frontend/build`
+
+### Local with Docker
 
 ```bash
 docker-compose up --build
 ```
 
-Starts: FastAPI (8000), React (3000), PostgreSQL (5432), Redis (6379).
-
-### Manual
-
-See [Getting Started](#getting-started) above.
-
 ---
 
 ## Known Limitations
 
-- **GitHub fetching** is limited to 40 files per repository and public repos only without a token.
-- **Embeddings** use a hash-based approximation rather than neural embeddings. Production implementation would use sentence-transformers or a dedicated embedding model.
-- **Frontend API calls** go directly to external services in the prototype. Production deployment would route all external calls through the backend gateway.
-- **PR generation** creates the complete payload (title, branch, body, diff) but does not POST to the GitHub API.
-- **No authentication or multi-user support** in the current version.
-- **Render free tier** spins down after 15 minutes of inactivity. First request after idle takes approximately 30 seconds.
+- Render free tier spins down after 15 min idle (30-50s cold start)
+- GitHub fetching limited to 40 files, public repos only without token
+- Embeddings use hash-based approximation, not neural embeddings
+- Frontend makes some API calls directly (production: backend-mediated)
+- PR generation creates payload only, does not POST to GitHub
+- No authentication or multi-user support
+- SQLite in deployed version (PostgreSQL available via Docker)
 
 ---
 
 ## Future Work
 
-- Neural embeddings via sentence-transformers (local inference)
-- GitHub App integration for private repositories and webhook-triggered pipelines
-- Live Docker sandbox execution with streaming output
-- Celery + Redis task queue for async agent execution
-- GitHub PR creation via API (POST, not just payload generation)
-- Scheduled pipeline execution (cron-based)
-- Multi-user authentication and role-based access
+- Neural embeddings via sentence-transformers
+- GitHub App integration for private repos and webhooks
+- Live Docker sandbox execution
+- Celery + Redis task queue for async agents
+- GitHub PR creation via API
+- Scheduled pipeline execution (cron)
+- Multi-user authentication
+- PostgreSQL in production deployment
 - Cost tracking dashboard for API usage
-- Support for additional languages (Rust, Java, Ruby)
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Please open an issue first to discuss what you would like to change.
+Contributions welcome. Please open an issue first to discuss changes.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add your feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
+2. Create feature branch (`git checkout -b feature/your-feature`)
+3. Commit changes (`git commit -m 'Add your feature'`)
+4. Push to branch (`git push origin feature/your-feature`)
 5. Open a Pull Request
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+MIT License. See [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
 
+**Built by [Heet Goti](https://github.com/heetgoti22-bit)**
+
 Built with a focus on security, transparency, and honest engineering.
+
+[Live Demo](https://argos-ai-agents.netlify.app) · [API Docs](https://argos-api-55ia.onrender.com/docs) · [GitHub](https://github.com/heetgoti22-bit/argos-ai-agents)
 
 </div>
