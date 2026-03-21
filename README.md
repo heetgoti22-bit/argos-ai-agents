@@ -12,7 +12,8 @@ A private, security-first platform that analyzes repositories, detects vulnerabi
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-[Live Demo](https://argos-frontend.onrender.com) · [API Docs](https://argos-api.onrender.com/docs) · [Report Issue](../../issues)
+[Live Demo](https://argos-ai-agents.netlify.app
+) · [API Docs](https://argos-api-55ia.onrender.com/docs) · [Report Issue](../../issues)
 
 </div>
 
